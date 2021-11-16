@@ -7,6 +7,13 @@ opposites = {
     "left": "right",
     "right": "left"
 }
+directions = {    # direction: (x, y)
+    "up": (0, -1),
+    "down": (0, 1),
+    "left": (-1, 0),
+    "right": (1, 0)
+}
+
 
 rows = 20
 columns = 20
@@ -42,39 +49,18 @@ def generate():
     global x, y
     neighbours = {}
 
-    # right
-    next_x = x + 1
-    next_y = y
-    if 0 <= next_x < columns and 0 <= next_y < rows:
-        right = maze[next_y][next_x]
-        if all(right.values()): # Check if all walls are still True
-            neighbours["right"] = next_x, next_y
+    for direction, movement in directions.items():
+        next_x = x + movement[0]
+        next_y = y + movement[1]
+        # print("direction", direction)
+        # print("current", x, y, sep=", ")
+        # print("movement", movement)
+        # print("next", next_x, next_y, sep=", ")
+        if 0 <= next_x < columns and 0 <= next_y < rows:
+            next = maze[next_y][next_x]
+            if all(next.values()): # Check if all walls are still True
+                neighbours[direction] = next_x, next_y
 
-
-    # up
-    next_x = x
-    next_y = y - 1
-    if 0 <= next_x < columns and 0 <= next_y < rows:
-        up = maze[next_y][next_x]
-        if all(up.values()): # Check if all walls are still True
-            neighbours["up"] = next_x, next_y
-
-    # left
-    next_x = x - 1
-    next_y = y
-    if 0 <= next_x < columns and 0 <= next_y < rows:
-        left = maze[next_y][next_x]
-        if all(left.values()): # Check if all walls are still True
-            neighbours["left"] = next_x, next_y
-        
-    # down
-    next_x = x
-    next_y = y + 1
-    if 0 <= next_x < columns and 0 <= next_y < rows:
-        down = maze[next_y][next_x]
-        if all(down.values()): # Check if all walls are still True
-            neighbours["down"] = next_x, next_y
-    
 
     if neighbours:
         direction = random.choice(list(neighbours))

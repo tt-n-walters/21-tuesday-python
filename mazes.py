@@ -52,10 +52,6 @@ def generate():
     for direction, movement in directions.items():
         next_x = x + movement[0]
         next_y = y + movement[1]
-        # print("direction", direction)
-        # print("current", x, y, sep=", ")
-        # print("movement", movement)
-        # print("next", next_x, next_y, sep=", ")
         if 0 <= next_x < columns and 0 <= next_y < rows:
             next = maze[next_y][next_x]
             if all(next.values()): # Check if all walls are still True

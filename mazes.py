@@ -8,8 +8,8 @@ opposites = {
     "right": "left"
 }
 
-rows = 10
-columns = 10
+rows = 20
+columns = 20
 cell_width = 40
 cell_height = 40
 padding = 10

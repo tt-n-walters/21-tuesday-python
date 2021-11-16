@@ -1,16 +1,18 @@
 import arcade
 import random
 
-
-arcade.open_window(420, 420, "Maze")
-arcade.set_background_color(arcade.color.BLACK)
-
 opposites = {
     "up": "down",
     "down": "up",
     "left": "right",
     "right": "left"
 }
+
+rows = 10
+columns = 10
+cell_width = 40
+cell_height = 40
+padding = 10
 
 
 maze = []
@@ -29,11 +31,17 @@ for _ in range(10):
 x = 0
 y = 0
 
+width = columns * cell_width + padding * 2
+height = rows * cell_height + padding * 2
+
+arcade.open_window(width, height, "Maze")
+arcade.set_background_color(arcade.color.BLACK)
+
+
 def generate():
     global x, y
     neighbours = {}
 
-    # print("current", x, y)
     # right
     next_x = x + 1
     next_y = y

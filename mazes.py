@@ -139,5 +139,5 @@ def draw(delta):
     create_shapes().draw()
 
 
-arcade.schedule(draw, 1/60)
+arcade.schedule(draw, 1/10)
 arcade.run()

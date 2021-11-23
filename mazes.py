@@ -15,10 +15,10 @@ directions = {    # direction: (x, y)
 }
 
 
-rows = 20
-columns = 20
-cell_width = 40
-cell_height = 40
+rows = 140
+columns = 140
+cell_width = 5
+cell_height = 5
 padding = 10
 
 
@@ -44,33 +44,45 @@ height = rows * cell_height + padding * 2
 arcade.open_window(width, height, "Maze")
 arcade.set_background_color(arcade.color.BLACK)
 
+stack = []
+first = True
 
 def generate():
-    global x, y
-    neighbours = {}
+    global x, y, first
 
-    for direction, movement in directions.items():
-        next_x = x + movement[0]
-        next_y = y + movement[1]
-        if 0 <= next_x < columns and 0 <= next_y < rows:
-            next = maze[next_y][next_x]
-            if all(next.values()): # Check if all walls are still True
-                neighbours[direction] = next_x, next_y
+    if first or stack:
+        first = False
+
+        neighbours = {}
+
+        for direction, movement in directions.items():
+            next_x = x + movement[0]
+            next_y = y + movement[1]
+            if 0 <= next_x < columns and 0 <= next_y < rows:
+                next = maze[next_y][next_x]
+                if all(next.values()): # Check if all walls are still True
+                    neighbours[direction] = next_x, next_y
 
 
-    if neighbours:
-        direction = random.choice(list(neighbours))
-        opposite_direction = opposites[direction]
+        if neighbours:
+            direction = random.choice(list(neighbours))
+            opposite_direction = opposites[direction]
 
-        next_x, next_y = neighbours[direction]
+            next_x, next_y = neighbours[direction]
+            # remove wall from current cell
+            maze[y][x][direction] = False
+            # remove opposite wall from next cell
+            maze[next_y][next_x][opposite_direction] = False
+            
+            stack.append((x, y))
+
+            x = next_x
+            y = next_y
         
-        # remove wall from current cell
-        maze[y][x][direction] = False
-        # remove opposite wall from next cell
-        maze[next_y][next_x][opposite_direction] = False
+        else:
+            # Dead end, no possible neighbours
+            x, y = stack.pop()
 
-        x = next_x
-        y = next_y
 
 
 def create_shapes():
@@ -88,13 +100,32 @@ def create_shapes():
                 shapes_list.append(arcade.create_line(x, y, x, y+cell_height, arcade.color.GREEN)) # left
             if cell["right"]:
                 shapes_list.append(arcade.create_line(x+cell_width, y, x+cell_width, y+cell_height, arcade.color.GREEN)) # right
+            if (column, row) in stack:
+                shapes_list.append(arcade.create_rectangle_filled(
+                    x+cell_width/2, y+cell_height/2,
+                    cell_width*0.5, cell_height*0.5,
+                    arcade.color.YELLOW
+                ))
+
     return shapes_list
+
+
+print("Generating maze...")
+generate()
+while stack:
+    generate()
+print("Finished generating maze.")
+
+shapes = create_shapes()
+
 
 def draw(delta):
     arcade.start_render()
-    generate()
-    create_shapes().draw()
+    shapes.draw()
 
+    # generate()
+    # create_shapes().draw()
 
-arcade.schedule(draw, 1/10)
+target_framerate = 30
+arcade.schedule(draw, 1 / target_framerate)
 arcade.run()

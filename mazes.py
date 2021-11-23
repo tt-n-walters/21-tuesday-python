@@ -1,5 +1,8 @@
 import arcade
 import random
+import timeit
+from arcade import draw_commands
+
 
 opposites = {
     "up": "down",
@@ -15,10 +18,10 @@ directions = {    # direction: (x, y)
 }
 
 
-rows = 140
-columns = 140
-cell_width = 5
-cell_height = 5
+rows = 50
+columns = 50
+cell_width = 10
+cell_height = 10
 padding = 10
 
 
@@ -110,22 +113,40 @@ def create_shapes():
     return shapes_list
 
 
-print("Generating maze...")
-generate()
-while stack:
-    generate()
-print("Finished generating maze.")
 
-shapes = create_shapes()
-
+generate_times = []
+create_times = []
+draw_times = []
 
 def draw(delta):
     arcade.start_render()
+
+    s = timeit.default_timer()
+    for _ in range(500):
+        generate()
+    e = timeit.default_timer()
+    generate_times.append(e - s)
+    
+    s = timeit.default_timer()
+    shapes = create_shapes()
+    e = timeit.default_timer()
+    create_times.append(e - s)
+    
+    s = timeit.default_timer()
     shapes.draw()
+    e = timeit.default_timer()
+    draw_times.append(e - s)
 
-    # generate()
-    # create_shapes().draw()
-
-target_framerate = 30
+target_framerate = 10
 arcade.schedule(draw, 1 / target_framerate)
 arcade.run()
+
+
+import matplotlib.pyplot as plt
+plt.plot(generate_times, c="g", marker=".")
+plt.plot(create_times, c="r", marker=".")
+plt.plot(draw_times, c="b", marker=".")
+plt.plot([1/target_framerate for _ in draw_times], c="k", marker=".")
+plt.show()
+
+print(generate_times)

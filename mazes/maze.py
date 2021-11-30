@@ -33,10 +33,10 @@ class Maze:
                 row.append(cell)
             self.grid.append(row)
             
-            self.stack = []
-            self.first = True
-            self.x = columns // 2
-            self.y = rows // 2
+        self.stack = []
+        self.first = True
+        self.x = columns // 2
+        self.y = rows // 2
 
 
     def generate(self):
@@ -50,7 +50,7 @@ class Maze:
                 next_x = self.x + movement[0]
                 next_y = self.y + movement[1]
                 if 0 <= next_x < self.columns and 0 <= next_y < self.rows:
-                    next = maze[next_y][next_x]
+                    next = self.grid[next_y][next_x]
                     if all(next.values()): # Check if all walls are still True
                         neighbours[direction] = next_x, next_y
 
@@ -61,9 +61,9 @@ class Maze:
 
                 next_x, next_y = neighbours[direction]
                 # remove wall from current cell
-                maze[self.y][self.x][direction] = False
+                self.grid[self.y][self.x][direction] = False
                 # remove opposite wall from next cell
-                maze[next_y][next_x][opposite_direction] = False
+                self.grid[next_y][next_x][opposite_direction] = False
                 
                 self.stack.append((self.x, self.y))
 
@@ -75,6 +75,15 @@ class Maze:
                 self.x, self.y = self.stack.pop()
 
 
+    def __repr__(self):
+        return "Maze with " + str(self.rows) + " rows and " + str(self.columns) + " columns."
+    
 
-maze = Maze(rows=5, columns=5)
-print(maze.grid)
+    def __getitem__(self, index):
+        return self.grid[index]
+
+
+
+if __name__ == "__main__":
+    maze = Maze(rows=5, columns=5)
+    print(maze.grid)

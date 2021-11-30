@@ -16,25 +16,12 @@ directions = {    # direction: (x, y)
 }
 
 
-rows = 50
-columns = 50
-cell_width = 10
-cell_height = 10
+
+cell_width = 40
+cell_height = 40
 padding = 10
 
 
-maze = []
-for _ in range(rows):
-    row = []
-    for _ in range(columns):
-        cell = {
-            "up": True,
-            "down": True,
-            "left": True,
-            "right": True
-        }
-        row.append(cell)
-    maze.append(row)
 
 x = columns // 2
 y = rows // 2
@@ -118,6 +105,6 @@ def draw(delta):
     shapes = create_shapes()
     shapes.draw()
 
-target_framerate = 10
+target_framerate = 30
 arcade.schedule(draw, 1 / target_framerate)
 arcade.run()

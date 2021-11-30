@@ -1,7 +1,6 @@
 import arcade
 import random
 import timeit
-from arcade import draw_commands
 
 
 opposites = {
@@ -111,7 +110,6 @@ def create_shapes():
                 ))
 
     return shapes_list
-
 
 
 generate_times = []

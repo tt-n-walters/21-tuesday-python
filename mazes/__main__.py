@@ -3,6 +3,7 @@ from display import Display
 import arcade
 
 
-maze = Maze(rows=30, columns=30)
-Display(maze, 20, 20, 10)
+maze = Maze(rows=20, columns=20)
+Display(maze, 40, 40, 10)
+
 arcade.run()

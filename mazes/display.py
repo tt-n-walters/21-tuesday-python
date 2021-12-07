@@ -12,41 +12,55 @@ class Display(arcade.Window):
         self.cell_width = cell_width
         self.cell_height = cell_height
         self.padding = padding
+    
+        self.shapes_list = arcade.ShapeElementList()
+
+        self.shapes_map = [
+            [ [] for _ in range(self.maze.columns) ]
+            for _ in range(self.maze.rows)
+        ]
 
 
         
-    def create_shapes(self):
+    def create_shapes(self, new_row, new_column):
         cell_width = self.cell_width
         cell_height = self.cell_height
         padding = self.padding
 
-        shapes_list = arcade.ShapeElementList()
         for row in range(self.maze.rows):
             for column in range(self.maze.columns):
-                x = column * cell_width + padding
-                y = self.height - cell_height - row * cell_height - padding
-                cell = self.maze[row][column]
-                if cell["down"]:
-                    shapes_list.append(arcade.create_line(x, y, x+cell_width, y, arcade.color.GREEN))  # down
-                if cell["up"]:
-                    shapes_list.append(arcade.create_line(x, y+cell_height, x+cell_width, y+cell_height, arcade.color.GREEN)) # top
-                if cell["left"]:
-                    shapes_list.append(arcade.create_line(x, y, x, y+cell_height, arcade.color.GREEN)) # left
-                if cell["right"]:
-                    shapes_list.append(arcade.create_line(x+cell_width, y, x+cell_width, y+cell_height, arcade.color.GREEN)) # right
-                if (column, row) in self.maze.stack:
-                    shapes_list.append(arcade.create_rectangle_filled(
-                        x+cell_width/2, y+cell_height/2,
-                        cell_width*0.5, cell_height*0.5,
-                        arcade.color.YELLOW
-                    ))
+                if row == new_row and column == new_column:
+                    x = column * cell_width + padding
+                    y = self.height - cell_height - row * cell_height - padding
+                    cell = self.maze[row][column]
+                    if cell["down"]:
+                        self.shapes_list.append(arcade.create_line(x, y, x+cell_width, y, arcade.color.GREEN))  # down
+                    if cell["up"]:
+                        self.shapes_list.append(arcade.create_line(x, y+cell_height, x+cell_width, y+cell_height, arcade.color.GREEN)) # top
+                    if cell["left"]:
+                        self.shapes_list.append(arcade.create_line(x, y, x, y+cell_height, arcade.color.GREEN)) # left
+                    if cell["right"]:
+                        self.shapes_list.append(arcade.create_line(x+cell_width, y, x+cell_width, y+cell_height, arcade.color.GREEN)) # right
+                    if (column, row) in self.maze.stack:
+                        self.shapes_list.append(arcade.create_rectangle_filled(
+                            x+cell_width/2, y+cell_height/2,
+                            cell_width*0.5, cell_height*0.5,
+                            arcade.color.YELLOW
+                        ))
 
-        return shapes_list
+    def remove_shapes(self, row, column):
+        self.shapes_list.remove()
+
     
 
     def on_draw(self):
         arcade.start_render()
 
         self.maze.generate()
-        shapes = self.create_shapes()
-        shapes.draw()
+        self.create_shapes(self.maze.y, self.maze.x)
+        self.create_shapes(self.maze.y + 1, self.maze.x)
+        self.create_shapes(self.maze.y - 1, self.maze.x)
+        self.create_shapes(self.maze.y, self.maze.x + 1)
+        self.create_shapes(self.maze.y, self.maze.x - 1)
+        self.shapes_list.draw()
+    

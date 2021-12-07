@@ -34,19 +34,29 @@ class Display(arcade.Window):
                     y = self.height - cell_height - row * cell_height - padding
                     cell = self.maze[row][column]
                     if cell["down"]:
-                        self.shapes_list.append(arcade.create_line(x, y, x+cell_width, y, arcade.color.GREEN))  # down
+                        shape = arcade.create_line(x, y, x+cell_width, y, arcade.color.GREEN)  # down
+                        self.shapes_list.append(shape)
+                        self.shapes_map[row][column].append(shape)
                     if cell["up"]:
-                        self.shapes_list.append(arcade.create_line(x, y+cell_height, x+cell_width, y+cell_height, arcade.color.GREEN)) # top
+                        shape = arcade.create_line(x, y+cell_height, x+cell_width, y+cell_height, arcade.color.GREEN) # top
+                        self.shapes_list.append(shape)
+                        self.shapes_map[row][column].append(shape)
                     if cell["left"]:
-                        self.shapes_list.append(arcade.create_line(x, y, x, y+cell_height, arcade.color.GREEN)) # left
+                        shape = arcade.create_line(x, y, x, y+cell_height, arcade.color.GREEN) # left
+                        self.shapes_list.append(shape)
+                        self.shapes_map[row][column].append(shape)
                     if cell["right"]:
-                        self.shapes_list.append(arcade.create_line(x+cell_width, y, x+cell_width, y+cell_height, arcade.color.GREEN)) # right
+                        shape = arcade.create_line(x+cell_width, y, x+cell_width, y+cell_height, arcade.color.GREEN) # right
+                        self.shapes_list.append(shape)
+                        self.shapes_map[row][column].append(shape)
                     if (column, row) in self.maze.stack:
-                        self.shapes_list.append(arcade.create_rectangle_filled(
+                        shape = arcade.create_rectangle_filled(
                             x+cell_width/2, y+cell_height/2,
                             cell_width*0.5, cell_height*0.5,
                             arcade.color.YELLOW
-                        ))
+                        )
+                        self.shapes_list.append(shape)
+                        self.shapes_map[row][column].append(shape)
 
     def remove_shapes(self, row, column):
         self.shapes_list.remove()

@@ -23,6 +23,7 @@ class Display(arcade.Window):
 
         
     def create_shapes(self, new_row, new_column):
+        self.remove_shapes(new_row, new_column)
         cell_width = self.cell_width
         cell_height = self.cell_height
         padding = self.padding
@@ -58,9 +59,12 @@ class Display(arcade.Window):
                         self.shapes_list.append(shape)
                         self.shapes_map[row][column].append(shape)
 
-    def remove_shapes(self, row, column):
-        self.shapes_list.remove()
 
+    def remove_shapes(self, row, column):
+        shapes = self.shapes_map[row][column]
+        for shape in shapes:
+            self.shapes_list.remove(shape)
+        self.shapes_map[row][column].clear()
     
 
     def on_draw(self):
@@ -68,9 +72,13 @@ class Display(arcade.Window):
 
         self.maze.generate()
         self.create_shapes(self.maze.y, self.maze.x)
-        self.create_shapes(self.maze.y + 1, self.maze.x)
-        self.create_shapes(self.maze.y - 1, self.maze.x)
-        self.create_shapes(self.maze.y, self.maze.x + 1)
-        self.create_shapes(self.maze.y, self.maze.x - 1)
+        if self.maze.y < self.maze.rows - 1:
+            self.create_shapes(self.maze.y + 1, self.maze.x)
+        if self.maze.y > 0:
+            self.create_shapes(self.maze.y - 1, self.maze.x)
+        if self.maze.x < self.maze.columns - 1:
+            self.create_shapes(self.maze.y, self.maze.x + 1)
+        if self.maze.x > 0:
+            self.create_shapes(self.maze.y, self.maze.x - 1)
         self.shapes_list.draw()
     

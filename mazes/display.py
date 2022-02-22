@@ -19,7 +19,10 @@ class Display(arcade.Window):
             [ [] for _ in range(self.maze.columns) ]
             for _ in range(self.maze.rows)
         ]
-
+        
+        for row in range(self.maze.rows):
+            for column in range(self.maze.columns):
+                self.create_shapes(row, column)
 
         
     def create_shapes(self, new_row, new_column):

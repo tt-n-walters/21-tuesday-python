@@ -1,4 +1,5 @@
 import random
+from vector import Vector
 
 
 opposites = {
@@ -8,10 +9,10 @@ opposites = {
     "right": "left"
 }
 directions = {    # direction: (x, y)
-    "up": (0, -1),
-    "down": (0, 1),
-    "left": (-1, 0),
-    "right": (1, 0)
+    "up": Vector(0, -1),
+    "down": Vector(0, 1),
+    "left": Vector(-1, 0),
+    "right": Vector(1, 0)
 }
 
 
@@ -35,8 +36,8 @@ class Maze:
             
         self.stack = []
         self.first = True
-        self.x = columns // 2
-        self.y = rows // 2
+        
+        self.current = Vector(columns // 2, rows // 2)
 
 
     def generate(self):
@@ -47,32 +48,32 @@ class Maze:
             neighbours = {}
 
             for direction, movement in directions.items():
-                next_x = self.x + movement[0]
-                next_y = self.y + movement[1]
-                if 0 <= next_x < self.columns and 0 <= next_y < self.rows:
-                    next = self.grid[next_y][next_x]
-                    if all(next.values()): # Check if all walls are still True
-                        neighbours[direction] = next_x, next_y
+                next = self.current + movement
+                if 0 <= next.x < self.columns and 0 <= next.y < self.rows:
+                    next_pos = self.grid[next.y][next.x]
+                    if all(next_pos.values()): # Check if all walls are still True
+                        neighbours[direction] = next
 
 
             if neighbours:
                 direction = random.choice(list(neighbours))
                 opposite_direction = opposites[direction]
 
-                next_x, next_y = neighbours[direction]
+                next = neighbours[direction]
+                print(neighbours)
+                print(next)
                 # remove wall from current cell
-                self.grid[self.y][self.x][direction] = False
+                self.grid[self.current.y][self.current.x][direction] = False
                 # remove opposite wall from next cell
-                self.grid[next_y][next_x][opposite_direction] = False
+                self.grid[next.y][next.x][opposite_direction] = False
                 
-                self.stack.append((self.x, self.y))
+                self.stack.append(self.current)
 
-                self.x = next_x
-                self.y = next_y
+                self.current = next
             
             else:
                 # Dead end, no possible neighbours
-                self.x, self.y = self.stack.pop()
+                self.current = self.stack.pop()
 
 
     def __repr__(self):
